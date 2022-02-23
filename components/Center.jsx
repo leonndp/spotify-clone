@@ -4,6 +4,9 @@ import { ChevronDownIcon } from '@heroicons/react/outline'
 import { shuffle } from 'lodash'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { playlistIdState, playlistState } from './../atoms/playlistAtom'
+import useSpotify from '../hooks/useSpotify'
+
+import Songs from './Songs'
 
 const colors = [
   'from-indigo-500',
@@ -17,6 +20,7 @@ const colors = [
 
 function Center() {
   const { data: session } = useSession()
+  const spotifyApi = useSpotify()
   const [color, setColor] = useState(null)
   const playlistId = useRecoilValue(playlistIdState)
   const [playlist, setPlaylist] = useRecoilState(playlistState)
@@ -25,14 +29,19 @@ function Center() {
     setColor(shuffle(colors).pop())
   }, [playlistId])
 
-  /* useEffect(() => {
-
-  }, []) */
+  useEffect(() => {
+    spotifyApi
+      .getPlaylist(playlistId)
+      .then((data) => {
+        setPlaylist(data.body)
+      })
+      .catch((error) => console.log('Something went wrong!', error))
+  }, [spotifyApi, playlistId])
 
   return (
     <div className="flex-grow">
       <header className="absolute top-5 right-8">
-        <div className="flex cursor-pointer items-center space-x-3 rounded-full bg-red-300 p-1 pr-2 opacity-90 hover:opacity-80">
+        <div className="flex cursor-pointer items-center space-x-3 rounded-full bg-black p-1 pr-2 text-white opacity-90 hover:opacity-80">
           <img
             className="h-10 w-10 rounded-full"
             src={session?.user.image}
@@ -44,10 +53,22 @@ function Center() {
       </header>
 
       <section
-        className={`padding-8 flex h-80 items-end space-x-7 bg-gradient-to-b ${color} to-black text-white`}
+        className={`flex h-80 items-end space-x-7 bg-gradient-to-b p-8 ${color} to-black text-white`}
       >
-        {/* <img src="" alt="" /> */}
+        <img
+          className="h-44 w-44 shadow-2xl"
+          src={playlist?.images?.[0]?.url}
+          alt=""
+        />
+        <div>
+          <p>PLAYLIST</p>
+          <h1 className="text-2xl md:text-3xl xl:text-4xl">{playlist?.name}</h1>
+        </div>
       </section>
+
+      <div>
+        <Songs />
+      </div>
     </div>
   )
 }
