@@ -5,7 +5,7 @@ import Sidebar from '../components/Sidebar'
 
 const Home: NextPage = () => {
   return (
-    <div>
+    <div className='bg-black h-screen overflow-hidden'>
       <Head>
         <title>Create Next App</title>
         {/* <link rel="icon" href="/favicon.ico" /> */}
