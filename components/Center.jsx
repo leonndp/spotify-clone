@@ -39,7 +39,6 @@ function Center() {
         className={`padding-8 flex h-80 items-end space-x-7 bg-gradient-to-b ${color} to-black text-white`}
       >
         {/* <img src="" alt="" /> */}
-        <h1>hello</h1>
       </section>
     </div>
   )
