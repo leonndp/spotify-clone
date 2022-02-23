@@ -1,11 +1,11 @@
-import type { NextPage } from 'next'
+/* import type { NextPage } from 'next' */
 import Head from 'next/head'
 import Image from 'next/image'
 import Sidebar from '../components/Sidebar'
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
-    <div className='bg-black h-screen overflow-hidden'>
+    <div className="h-screen overflow-hidden bg-black">
       <Head>
         <title>Create Next App</title>
         {/* <link rel="icon" href="/favicon.ico" /> */}
@@ -16,9 +16,7 @@ const Home: NextPage = () => {
         {/* Center */}
       </main>
 
-      <div>
-        {/* Player */}
-      </div>
+      <div>{/* Player */}</div>
     </div>
   )
 }
