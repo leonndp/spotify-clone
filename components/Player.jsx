@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import useSpotify from '../hooks/useSpotify'
 import { millisToMinutesAndSeconds } from '../lib/time'
@@ -18,6 +18,7 @@ import {
   ReplyIcon,
   VolumeUpIcon,
 } from '@heroicons/react/solid'
+import { debounce } from 'lodash'
 
 function Player() {
   const spotifyApi = useSpotify()
@@ -61,6 +62,21 @@ function Player() {
     }
   }, [currentTrackId, spotifyApi, session])
 
+  useEffect(() => {
+    if (volume > 0 && volume < 100) {
+      debouncedAdjustVolume(volume)
+    }
+  }, [volume])
+
+  const debouncedAdjustVolume = useCallback(
+    debounce((volume) => {
+      spotifyApi.setVolume(volume).catch((err) => {
+        console.log(err)
+      })
+    }, 300),
+    []
+  )
+
   return (
     <div className="grid h-24 grid-cols-3 bg-gradient-to-b from-black to-gray-900 px-2 text-xs text-white md:px-8 md:text-base">
       {/* Left */}
@@ -86,7 +102,7 @@ function Player() {
         {isPlaying ? (
           <PauseIcon onClick={handlePlayPause} className="button" />
         ) : (
-          <PlayIcon onClick={handlePlayPause} className="button" />
+          <PlayIcon onClick={handlePlayPause} className="button-lg" />
         )}
 
         <FastForwardIcon className="button" />
@@ -95,15 +111,22 @@ function Player() {
 
       {/* Right */}
       <div className="flex items-center justify-end space-x-3 md:space-x-4">
-        <VolumeDownIcon className="button" />
+        <VolumeDownIcon
+          onClick={() => volume > 0 && setVolume(volume - 10)}
+          className="button"
+        />
         <input
           className="w-14 md:w-28"
           type="range"
           min={0}
           max={100}
           value={volume}
+          onChange={(e) => setVolume(Number(e.target.value))}
         />
-        <VolumeUpIcon className="button" />
+        <VolumeUpIcon
+          onClick={() => volume < 100 && setVolume(volume + 10)}
+          className="button"
+        />
       </div>
     </div>
   )

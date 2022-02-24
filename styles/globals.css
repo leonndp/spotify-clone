@@ -6,4 +6,8 @@
   .button {
     @apply h-5 w-5 transform cursor-pointer transition duration-100 ease-in-out hover:scale-125;
   }
+
+  .button-lg {
+    @apply h-10 w-10 transform cursor-pointer transition duration-100 ease-in-out hover:scale-125;
+  }
 }
